@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace MixerClient;
+namespace MixerApi;
 
 use GuzzleHttp\Client;
-use MixerClient\Auth\OauthApi;
+use MixerApi\Auth\OauthApi;
 
 
-class MixerClient
+class MixerApi
 {
     private $oauthApi;
 
