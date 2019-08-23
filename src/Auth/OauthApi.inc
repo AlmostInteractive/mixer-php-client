@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MixerClient\Auth;
+namespace MixerApi\Auth;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
