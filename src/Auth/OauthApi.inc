@@ -134,7 +134,7 @@ class OauthApi
     private function getPartialAuthUrl(string $redirectUri, string $responseType = 'code', string $scope = '', bool $forceVerify = false, string $state = null): string
     {
         $optionalParameters = '';
-        $optionalParameters .= $forceVerify ? '&force_verify=true' : '';
+        $optionalParameters .= $forceVerify ? '&approval_prompt=force' : '';
         $optionalParameters .= $state ? sprintf('&state=%s', $state) : '';
 
         return sprintf(
