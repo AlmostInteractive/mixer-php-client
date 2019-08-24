@@ -12,6 +12,8 @@ use Psr\Http\Message\ResponseInterface;
 
 class OauthApi
 {
+    private const AUTH_ENDPOINT = 'https://mixer.com/oauth/authorize';
+
     private $clientId;
     private $clientSecret;
     /** @var Client */
@@ -31,7 +33,7 @@ class OauthApi
     {
         return sprintf(
             '%s%s',
-            $this->guzzleClient->getConfig('base_uri'),
+            self::AUTH_ENDPOINT,
             $this->getPartialAuthUrl($redirectUri, $responseType, $scope, $forceVerify, $state)
         );
     }
@@ -39,18 +41,17 @@ class OauthApi
     /**
      * @throws GuzzleException
      */
-    public function getUserAccessToken($code, string $redirectUri, $state = null): ResponseInterface
+    public function getUserAccessToken($code, string $redirectUri): ResponseInterface
     {
         return $this->makeRequest(
-            new Request('POST', 'token'),
+            new Request('POST', 'oauth/token'),
             [
                 RequestOptions::JSON => [
                     'client_id' => $this->clientId,
                     'client_secret' => $this->clientSecret,
                     'grant_type' => 'authorization_code',
                     'redirect_uri' => $redirectUri,
-                    'code' => $code,
-                    'state' => $state,
+                    'code' => $code
                 ]
             ]
         );
@@ -72,7 +73,7 @@ class OauthApi
         }
 
         return $this->makeRequest(
-            new Request('POST', 'token'),
+            new Request('POST', 'oauth/token'),
             [
                 RequestOptions::JSON => $requestOptions
             ]
@@ -87,7 +88,7 @@ class OauthApi
         return $this->makeRequest(
             new Request(
                 'GET',
-                'validate',
+                'oauth/validate',
                 [
                     'Authorization' => sprintf('OAuth %s', $accessToken)
                 ]
@@ -109,7 +110,7 @@ class OauthApi
     public function getAppAccessToken(string $scope = ''): ResponseInterface
     {
         return $this->makeRequest(
-            new Request('POST', 'token'),
+            new Request('POST', 'oauth/token'),
             [
                 RequestOptions::JSON => [
                     'client_id' => $this->clientId,
@@ -139,7 +140,7 @@ class OauthApi
         $optionalParameters .= $state ? sprintf('&state=%s', $state) : '';
 
         return sprintf(
-            'authorize?client_id=%s&redirect_uri=%s&response_type=%s&scope=%s%s',
+            '?client_id=%s&redirect_uri=%s&response_type=%s&scope=%s%s',
             $this->clientId,
             $redirectUri,
             $responseType,
