@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace MixerApi;
 
 use GuzzleHttp\Client;
-use MixerApi\Auth\OauthApi;
+use MixerApi\Api\OauthApi;
 
 class MixerApi
 {
