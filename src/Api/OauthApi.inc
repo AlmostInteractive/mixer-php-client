@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MixerApi\Auth;
+namespace MixerApi\Api;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
@@ -41,7 +41,7 @@ class OauthApi
     /**
      * @throws GuzzleException
      */
-    public function getUserAccessToken($code, string $redirectUri): ResponseInterface
+    public function getUserAccessToken(string $code, string $redirectUri): ResponseInterface
     {
         return $this->makeRequest(
             new Request('POST', 'oauth/token'),
