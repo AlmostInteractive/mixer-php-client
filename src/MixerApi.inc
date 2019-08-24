@@ -7,13 +7,14 @@ namespace MixerApi;
 use GuzzleHttp\Client;
 use MixerApi\Auth\OauthApi;
 
-
 class MixerApi
 {
     private $oauthApi;
 
-    public function __construct(Client $mixerGuzzleClient, string $clientId, string $clientSecret, Client $authGuzzleClient = null) {
-        $this->oauthApi = new OauthApi($clientId, $clientSecret, $authGuzzleClient);
+    public function __construct(string $clientId, string $clientSecret, Client $apiGuzzleClient = null) {
+        $apiGuzzleClient = $apiGuzzleClient ?? new MixerGuzzleClient($clientId);
+
+        $this->oauthApi = new OauthApi($clientId, $clientSecret, $apiGuzzleClient);
     }
 
     public function getOauthApi(): OauthApi

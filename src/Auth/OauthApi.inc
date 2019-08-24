@@ -14,13 +14,14 @@ class OauthApi
 {
     private $clientId;
     private $clientSecret;
+    /** @var Client */
     private $guzzleClient;
 
-    public function __construct(string $clientId, string $clientSecret, Client $guzzleClient = null)
+    public function __construct(string $clientId, string $clientSecret, Client $guzzleClient)
     {
         $this->clientId = $clientId;
         $this->clientSecret = $clientSecret;
-        $this->guzzleClient = $guzzleClient ?? new AuthGuzzleClient();
+        $this->guzzleClient = $guzzleClient;
     }
 
     /**

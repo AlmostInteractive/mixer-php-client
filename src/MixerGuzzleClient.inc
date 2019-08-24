@@ -2,18 +2,20 @@
 
 declare(strict_types=1);
 
-namespace MixerApi\Auth;
+namespace MixerApi;
 
 use GuzzleHttp\Client;
 
-class AuthGuzzleClient extends Client
+class MixerGuzzleClient extends Client
 {
-    private const BASE_URI = 'https://mixer.com/oauth/';
+    private const BASE_URI = 'https://mixer.com/api/v1/';
 
-    public function __construct(array $config = [])
+    public function __construct(string $clientId, array $config = [])
     {
         parent::__construct($config + [
-                'base_uri' => self::BASE_URI
+                'base_uri' => self::BASE_URI,
+                'timeout' => 30,
+                'headers' => ['Client-ID' => $clientId, 'Content-Type' => 'application/json'],
             ]);
     }
 }
