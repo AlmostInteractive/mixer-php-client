@@ -20,8 +20,8 @@ class MixerApi
         $guzzleClient = $guzzleClient ?? new MixerGuzzleClient($clientId);
 
         $this->oauthApi = new OauthApi($clientId, $clientSecret, $guzzleClient);
-        $this->usersApi = new UsersApi($guzzleClient);
-        $this->channelsApi = new ChannelsApi($guzzleClient);
+        $this->usersApi = new UsersApi($clientId, $guzzleClient);
+        $this->channelsApi = new ChannelsApi($clientId, $guzzleClient);
     }
 
     public function getOauthApi(): OauthApi { return $this->oauthApi; }

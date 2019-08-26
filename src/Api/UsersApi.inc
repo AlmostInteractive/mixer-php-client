@@ -18,6 +18,6 @@ class UsersApi extends AbstractApiBase
      */
     public function getUserByAccessToken(string $accessToken): ResponseInterface
     {
-        return $this->callApi('users/current', [], $accessToken);
+        return $this->apiGet('users/current', [], $accessToken);
     }
 }

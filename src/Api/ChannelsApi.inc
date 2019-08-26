@@ -19,7 +19,7 @@ class ChannelsApi extends AbstractApiBase
      */
     public function getChannel(string $channelIdOrAccessToken): ResponseInterface
     {
-        return $this->callApi("channels/$channelIdOrAccessToken");
+        return $this->apiGet("channels/$channelIdOrAccessToken");
     }
 
     /**
@@ -28,7 +28,7 @@ class ChannelsApi extends AbstractApiBase
      */
     public function getChannelDetails(string $channelIdOrAccessToken): ResponseInterface
     {
-        return $this->callApi("channels/$channelIdOrAccessToken/details");
+        return $this->apiGet("channels/$channelIdOrAccessToken/details");
     }
 
     /**
@@ -41,10 +41,13 @@ class ChannelsApi extends AbstractApiBase
 
         if ($from !== null)
             $queryParams['from'] = $from;
+        else
+            $queryParams['from'] = date('c');
+
         if ($to !== null)
             $queryParams['to'] = $to;
 
-        return $this->callApi("/channels/$channelId/analytics/tsdb/followers", $queryParams);
+        return $this->apiGet("channels/$channelId/analytics/tsdb/followers", $queryParams);
     }
 
     /**
@@ -64,6 +67,6 @@ class ChannelsApi extends AbstractApiBase
         if ($page !== null)
             $queryParams['fields'] = $fields;
 
-        return $this->callApi("/channels/$channelId/recordings", $queryParams);
+        return $this->apiGet("channels/$channelId/recordings", $queryParams);
     }
 }

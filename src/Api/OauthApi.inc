@@ -14,13 +14,11 @@ class OauthApi extends AbstractApiBase
 {
     private const AUTH_ENDPOINT = 'https://mixer.com/oauth/authorize';
 
-    private $clientId;
     private $clientSecret;
 
     public function __construct(string $clientId, string $clientSecret, Client $guzzleClient)
     {
-        parent::__construct($guzzleClient);
-        $this->clientId = $clientId;
+        parent::__construct($clientId, $guzzleClient);
         $this->clientSecret = $clientSecret;
     }
 
@@ -41,18 +39,14 @@ class OauthApi extends AbstractApiBase
      */
     public function getUserAccessToken(string $code, string $redirectUri): ResponseInterface
     {
-        return $this->makeRequest(
-            new Request('POST', 'oauth/token'),
+        return $this->apiPost('oauth/token',
             [
-                RequestOptions::JSON => [
-                    'client_id' => $this->clientId,
-                    'client_secret' => $this->clientSecret,
-                    'grant_type' => 'authorization_code',
-                    'redirect_uri' => $redirectUri,
-                    'code' => $code
-                ]
-            ]
-        );
+                'client_id' => $this->clientId,
+                'client_secret' => $this->clientSecret,
+                'grant_type' => 'authorization_code',
+                'redirect_uri' => $redirectUri,
+                'code' => $code
+            ]);
     }
 
     /**
@@ -70,11 +64,8 @@ class OauthApi extends AbstractApiBase
             $requestOptions['scope'] = $scope;
         }
 
-        return $this->makeRequest(
-            new Request('POST', 'oauth/token'),
-            [
-                RequestOptions::JSON => $requestOptions
-            ]
+        return $this->apiPost('oauth/token',
+            $requestOptions
         );
     }
 
@@ -83,13 +74,9 @@ class OauthApi extends AbstractApiBase
      */
     public function isValidAccessToken(string $accessToken): bool
     {
-        $response = $this->makeRequest(
-            new Request(
-                'POST',
-                'oauth/token/introspect',
-                [],
-                json_encode(['token' => $accessToken])
-            )
+        $response = $this->apiPost(
+            'oauth/token/introspect',
+            ['token' => $accessToken]
         );
         $data = json_decode($response->getBody()->getContents(), true);
         return $data['active'] === true;
@@ -100,25 +87,15 @@ class OauthApi extends AbstractApiBase
      */
     public function getAppAccessToken(string $scope = ''): ResponseInterface
     {
-        return $this->makeRequest(
-            new Request('POST', 'oauth/token'),
+        return $this->apiPost(
+            'oauth/token',
             [
-                RequestOptions::JSON => [
-                    'client_id' => $this->clientId,
-                    'client_secret' => $this->clientSecret,
-                    'grant_type' => 'client_credentials',
-                    'scope' => $scope,
-                ]
+                'client_id' => $this->clientId,
+                'client_secret' => $this->clientSecret,
+                'grant_type' => 'client_credentials',
+                'scope' => $scope,
             ]
         );
-    }
-
-    /**
-     * @throws GuzzleException
-     */
-    private function makeRequest(Request $request, array $options = []): ResponseInterface
-    {
-        return $this->guzzleClient->send($request, $options);
     }
 
     /**
