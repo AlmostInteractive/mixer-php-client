@@ -3,6 +3,13 @@
     "description": "A PHP client for Mixer.com OAuth and APIs",
     "type": "library",
     "license": "MIT",
+    "authors": [
+        {
+            "name": "Steven Joseph",
+            "homepage": "https://github.com/AlmostInteractive/mixer-php-client"
+        }
+    ],
+    "minimum-stability": "dev",
     "require": {
         "php": ">=7.1.0",
         "ext-json": "*",
