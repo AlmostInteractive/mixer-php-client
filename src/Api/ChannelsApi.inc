@@ -35,7 +35,7 @@ class ChannelsApi extends AbstractApiBase
      * @throws GuzzleException
      * https://dev.mixer.com/rest/index.html#channels__channelId__follow_get
      */
-    public function getFollowers(string $channelId, ?int $from = null, ?$to = null): ResponseInterface
+    public function getFollowers(string $channelId, ?int $from = null, ?int $to = null): ResponseInterface
     {
         $queryParams = [];
 
