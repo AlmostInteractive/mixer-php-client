@@ -9,7 +9,6 @@
             "homepage": "https://github.com/AlmostInteractive/mixer-php-client"
         }
     ],
-    "minimum-stability": "dev",
     "require": {
         "php": ">=7.1.0",
         "ext-json": "*",
