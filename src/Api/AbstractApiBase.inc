@@ -7,29 +7,59 @@ namespace MixerApi\Api;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\RequestOptions;
 use Psr\Http\Message\ResponseInterface;
 
 abstract class AbstractApiBase
 {
+    protected $clientId;
     protected $guzzleClient;
 
-    public function __construct(Client $guzzleClient)
+    public function __construct(string $clientId, Client $guzzleClient)
     {
+        $this->clientId = $clientId;
         $this->guzzleClient = $guzzleClient;
     }
 
     /**
      * @throws GuzzleException
      */
-    protected function callApi(string $uriEndpoint, array $queryParams = [], string $bearer = null): ResponseInterface
+    protected function apiGet(string $uriEndpoint, array $queryParams = [], string $bearer = null): ResponseInterface
     {
+        $headers = ['Client-ID' => $this->clientId];
+        if ($bearer)
+            $headers['Authorization'] = sprintf('Bearer %s', $bearer);
+
         $request = new Request(
             'GET',
             sprintf('%s%s', $uriEndpoint, $this->generateQueryParams($queryParams)),
-            $bearer ? ['Authorization' => sprintf('Bearer %s', $bearer)] : []
+            $headers
         );
 
         return $this->guzzleClient->send($request);
+    }
+
+    /**
+     * @throws GuzzleException
+     */
+    protected function apiPost(string $uriEndpoint, ?array $body = null, string $bearer = null): ResponseInterface
+    {
+        $headers = ['Client-ID' => $this->clientId];
+        if ($bearer)
+            $headers['Authorization'] = sprintf('Bearer %s', $bearer);
+
+        $request = new Request(
+            'POST',
+            $uriEndpoint,
+            $headers);
+
+        $options = $body
+            ? [
+                RequestOptions::JSON => $body
+            ]
+            : [];
+
+        return $this->guzzleClient->send($request, $options);
     }
 
     /**
