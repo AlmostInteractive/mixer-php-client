@@ -9,7 +9,7 @@ class OauthTest extends TestCase
     public function testCanCreateClassWithMinimumOptions()
     {
         $mixerGuzzleClient = new MixerGuzzleClient('CLIENT-ID');
-        $mixerApi = new MixerApi($mixerGuzzleClient, 'CLIENT-ID', 'CLIENT-SECRET');
+        $mixerApi = new MixerApi('CLIENT-ID', 'CLIENT-SECRET', $mixerGuzzleClient);
         $this->assertInstanceOf(MixerApi::class, $mixerApi);
 
         return $mixerApi;
