@@ -21,11 +21,11 @@ abstract class AbstractApiBase
     /**
      * @throws GuzzleException
      */
-    protected function callApi(string $uriEndpoint, array $queryParamsMap = [], string $bearer = null): ResponseInterface
+    protected function callApi(string $uriEndpoint, array $queryParams = [], string $bearer = null): ResponseInterface
     {
         $request = new Request(
             'GET',
-            sprintf('%s%s', $uriEndpoint, $this->generateQueryParams($queryParamsMap)),
+            sprintf('%s%s', $uriEndpoint, $this->generateQueryParams($queryParams)),
             $bearer ? ['Authorization' => sprintf('Bearer %s', $bearer)] : []
         );
 
@@ -40,13 +40,13 @@ abstract class AbstractApiBase
      * would result in
      * ?param_key=42&other_key=asdf
      */
-    protected function generateQueryParams(array $queryParamsMap): string
+    protected function generateQueryParams(array $queryParams): string
     {
         $queryStringParams = '';
-        foreach ($queryParamsMap as $paramMap) {
-            if ($paramMap['value']) {
-                $format = is_int($paramMap['value']) ? '%d' : '%s';
-                $queryStringParams .= sprintf('&%s=' . $format, $paramMap['key'], $paramMap['value']);
+        foreach ($queryParams as $key => $value) {
+            if ($value) {
+                $format = is_int($value) ? '%d' : '%s';
+                $queryStringParams .= sprintf('&%s=' . $format, $key, $value);
             }
         }
 
