@@ -10,20 +10,18 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\RequestOptions;
 use Psr\Http\Message\ResponseInterface;
 
-class OauthApi
+class OauthApi extends AbstractApiBase
 {
     private const AUTH_ENDPOINT = 'https://mixer.com/oauth/authorize';
 
     private $clientId;
     private $clientSecret;
-    /** @var Client */
-    private $guzzleClient;
 
     public function __construct(string $clientId, string $clientSecret, Client $guzzleClient)
     {
+        parent::__construct($guzzleClient);
         $this->clientId = $clientId;
         $this->clientSecret = $clientSecret;
-        $this->guzzleClient = $guzzleClient;
     }
 
     /**
@@ -83,25 +81,18 @@ class OauthApi
     /**
      * @throws GuzzleException
      */
-    public function validateAccessToken(string $accessToken): ResponseInterface
-    {
-        return $this->makeRequest(
-            new Request(
-                'GET',
-                'oauth/validate',
-                [
-                    'Authorization' => sprintf('OAuth %s', $accessToken)
-                ]
-            )
-        );
-    }
-
-    /**
-     * @throws GuzzleException
-     */
     public function isValidAccessToken(string $accessToken): bool
     {
-        return $this->validateAccessToken($accessToken)->getStatusCode() === 200;
+        $response = $this->makeRequest(
+            new Request(
+                'POST',
+                'oauth/token/introspect',
+                [],
+                json_encode(['token' => $accessToken])
+            )
+        );
+        $data = json_decode($response->getBody()->getContents(), true);
+        return $data['active'] === true;
     }
 
     /**
